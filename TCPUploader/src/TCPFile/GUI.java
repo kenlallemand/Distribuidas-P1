@@ -58,10 +58,10 @@ public class GUI extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 120, 30));
 
-        jTextField1.setText("Ip direccion");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, -1, -1));
+        jTextField1.setText("localhost");
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 80, 30));
 
         jTextField2.setText("9090");
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
@@ -69,7 +69,7 @@ public class GUI extends javax.swing.JFrame {
                 jTextField2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 30, -1, -1));
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 49, 40, 30));
 
         jButton2.setText("Browse");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -77,10 +77,10 @@ public class GUI extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, -1, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, -1, -1));
 
         labelFile.setText("File: ");
-        getContentPane().add(labelFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, -1, -1));
+        getContentPane().add(labelFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

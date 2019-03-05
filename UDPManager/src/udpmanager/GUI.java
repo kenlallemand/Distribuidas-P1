@@ -243,29 +243,8 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
 
     @Override
     public void DatagramPacketReceived(String sourceHost, int sourcePort, byte[] payload) {
-        String FILEPATH = ""; 
-        File file = new File(FILEPATH); 
-         try { 
-  
-            // Initialize a pointer 
-            // in file using OutputStream 
-            OutputStream 
-                os 
-                = new FileOutputStream(file); 
-  
-            // Starts writing the bytes in it 
-            os.write(payload); 
-            System.out.println("Successfully"
-                               + " byte inserted"); 
-  
-            // Close the file 
-            os.close(); 
-            } 
-  
-        catch (Exception e) { 
-            System.out.println("Exception: " + e); 
-        } 
-         System.out.println(file.getName());
+       
+        
         this.jTextArea1.insert("sourceHost: "+
                 sourceHost+"/ sourcePort: "+
                 sourcePort +" / Payload: "+
