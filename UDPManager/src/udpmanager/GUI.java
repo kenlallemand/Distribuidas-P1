@@ -156,6 +156,11 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                                 parseInt(this.
                                         jTextField4.getText()));
         }else{
+             this.uDPListenerManager=
+                new UDPListenerManager(
+                        this, Integer.
+                                parseInt(this.
+                                        jTextField4.getText()));
             this.multicastManager=new MulticastManager(this.jTextField1.getText(), 
                     Integer.
                                 parseInt(this.jTextField4.getText()), this);
