@@ -1,6 +1,13 @@
 
 package ws;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -28,11 +35,24 @@ public class NewWebService {
 
     /**
      * Web service operation
-     * @param FileName
+     * @return 
      */
-    @WebMethod(operationName = "GetBytes")
-    public byte[] GetBytes(@WebParam(name = "FileName") String FileName) {
-        //TODO write your implementation code here:
-        return FileName.getBytes();
+    @WebMethod(operationName = "getBytes")
+    public byte[] getBytes(@WebParam(name= "narch") String narch ) {
+        
+             String ruta = "/"+narch;
+            File archivo= new File(ruta);
+        try {
+            FileInputStream fis = new FileInputStream(archivo);
+            BufferedInputStream input = new BufferedInputStream(fis);
+            byte[] salida= new byte[(int) archivo.length()];
+            input.read(salida);
+            input.close();
+            return salida;
+        } catch (IOException ex) {
+            return null;
+        }
     }
+
+
 }
