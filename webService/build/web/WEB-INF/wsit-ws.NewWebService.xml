@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <definitions 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="NewWebService" targetNamespace="http://ws/" xmlns:tns="http://ws/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" 
+ >
+    <message name="getBytes"/>
+    <message name="getBytesResponse"/>
+    <message name="GetTamaño"/>
+    <message name="GetTamañoResponse"/>
+    <message name="GetArch"/>
+    <message name="GetArchResponse"/>
+    <message name="GetFileNameList"/>
+    <message name="GetFileNameListResponse"/>
+    <portType name="NewWebService">
+        <operation name="getBytes">
+            <input message="tns:getBytes"/>
+            <output message="tns:getBytesResponse"/>
+        </operation>
+        <operation name="GetTamaño">
+            <input message="tns:GetTamaño"/>
+            <output message="tns:GetTamañoResponse"/>
+        </operation>
+        <operation name="GetArch">
+            <input message="tns:GetArch"/>
+            <output message="tns:GetArchResponse"/>
+        </operation>
+        <operation name="GetFileNameList">
+            <input message="tns:GetFileNameList"/>
+            <output message="tns:GetFileNameListResponse"/>
+        </operation>
+    </portType>
+    <binding name="NewWebServicePortBinding" type="tns:NewWebService">
+        <wsp:PolicyReference URI="#NewWebServicePortBindingPolicy"/>
+        <operation name="getBytes">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetTamaño">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetArch">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetFileNameList">
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="NewWebService">
+        <port name="NewWebServicePort" binding="tns:NewWebServicePortBinding"/>
+    </service>
+    <wsp:Policy wsu:Id="NewWebServicePortBindingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <wsoma:OptimizedMimeSerialization/>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_GetServersFile_Input_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_GetServersFile_Output_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_hello_Input_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_hello_Output_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_GetFileName_Input_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_GetFileName_Output_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+</definitions>

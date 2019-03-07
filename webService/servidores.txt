@@ -1,0 +1,3 @@
+ip:
+lista de archivos 
+noseque.txt
