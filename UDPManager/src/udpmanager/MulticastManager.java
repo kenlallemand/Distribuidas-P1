@@ -46,15 +46,16 @@ public class MulticastManager extends Thread{
     
     @Override
     public void run(){
+        
         if(this.InitMulticastSocket()){
             DatagramPacket dp=
-                    new DatagramPacket(new byte[1024], 1024);
+                    new DatagramPacket(new byte[4096], 4096);
             while(this.isEnabled){
                 try {
                     this.multicastSocket.receive(dp);
                     this.caller.DatagramPacketReceived(dp.getAddress()
                         .getHostAddress(), dp.getPort(), dp.getData());
-                    dp.setData(new byte[1024]);
+                    dp.setData(new byte[4096]);
                 } catch (IOException ex) {
                     System.out.println("no recibio");
                 }

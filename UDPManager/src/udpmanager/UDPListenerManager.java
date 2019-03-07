@@ -8,6 +8,8 @@ package udpmanager;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -32,7 +34,7 @@ public class UDPListenerManager extends Thread{
         try{
             this.datagramSocket=new DatagramSocket(port);
         }catch (Exception ex) {
-            
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -41,17 +43,19 @@ public class UDPListenerManager extends Thread{
         try{
             InitUDPDatagramSocket();
             DatagramPacket dp=
-                    new DatagramPacket(new byte[1024], 1024);
+                    new DatagramPacket(new byte[4096], 4096);
             while(this.isEnabled){
                 this.datagramSocket.receive(dp);
-                this.caller.DatagramPacketReceived(dp.getAddress()
+                if (dp != null) {
+                    this.caller.DatagramPacketReceived(dp.getAddress()
                         .getHostAddress(), dp.getPort(), dp.getData());
                 
-                dp.setData(new byte[1024]);
+                    dp.setData(new byte[4096]);
                 
+                }              
             }
         }catch (Exception ex) {
-            
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -67,7 +71,24 @@ public class UDPListenerManager extends Thread{
             this.datagramSocket.send(dpToBeSent);
             
         }catch (Exception ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public void sendMessage(String ipAddress,
+            int destinationPort,byte[] message){
+        
+        try{
+            DatagramPacket dpToBeSent=new 
+        DatagramPacket(message, 
+                    message.length, 
+                InetAddress.getByName(ipAddress), 
+                destinationPort);
+            this.datagramSocket.send(dpToBeSent);
             
+        }catch (Exception ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }

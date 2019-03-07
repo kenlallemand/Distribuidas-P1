@@ -6,10 +6,12 @@
 package udpmanager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -18,16 +20,38 @@ import javax.swing.JFileChooser;
  *
  * @author asaad
  */
+
+
 public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterface{
 
+    
     UDPListenerManager uDPListenerManager;
     MulticastManager multicastManager;
+    ArrayList<byte[]> fragmentos; 
     
+    int sizeDatagram;
+    
+    ArrayList<byte[]> fragmentosRecibidos;
+    String nameFileRecived;
+    boolean comenzarFragmentos;
+    int totalSizeFile;
+    int contFragmentos;
+    int maxFragmentos;
+    int theLast;
     /**
      * Creates new form GUI
      */
     public GUI() {
         initComponents();
+        nameFileRecived = "Default";
+        fragmentos = new  ArrayList<byte[]> ();
+        fragmentosRecibidos = new  ArrayList<byte[]> ();
+        comenzarFragmentos = false;
+        totalSizeFile = 0;
+        contFragmentos = 0;
+        maxFragmentos = 0;
+        theLast = 0;
+        sizeDatagram = 4096;
     }
 
     /**
@@ -52,7 +76,12 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.setText("192.168.1.18");
+        jTextField1.setText("10.10.214.217");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jTextField2.setText("9090");
 
@@ -156,11 +185,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                                 parseInt(this.
                                         jTextField4.getText()));
         }else{
-             this.uDPListenerManager=
-                new UDPListenerManager(
-                        this, Integer.
-                                parseInt(this.
-                                        jTextField4.getText()));
+            
             this.multicastManager=new MulticastManager(this.jTextField1.getText(), 
                     Integer.
                                 parseInt(this.jTextField4.getText()), this);
@@ -168,7 +193,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(!this.jCheckBox1.isSelected()){
+        /*if(!this.jCheckBox1.isSelected()){
             this.uDPListenerManager.
                 sendMessage(this.jTextField1.getText(),
                         Integer.parseInt(this.jTextField2.
@@ -176,6 +201,24 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                                         getText());
         }else{
            
+        }*/
+        
+        JFileChooser fc = new JFileChooser();
+        int op = fc.showOpenDialog(this);
+        if (op == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            fragmentador(file);
+            for (int i = 0; i < fragmentos.size(); i++) {
+                this.uDPListenerManager.sendMessage(this.jTextField1.getText(),
+                        Integer.parseInt(this.jTextField2.
+                                getText()),fragmentos.get(i)); 
+                try {
+                    Thread.sleep(0, 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //System.out.println(i);
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -185,18 +228,25 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
         JFileChooser fc = new JFileChooser();
         int op = fc.showOpenDialog(this);
         if (op == JFileChooser.APPROVE_OPTION) {
-             File file = fc.getSelectedFile();
-            try {
-                filecontent = Files.readAllBytes(file.toPath());
+            File file = fc.getSelectedFile();
+            fragmentador(file); 
+            for (int i = 0; i < fragmentos.size(); i++) {             
                 this.multicastManager.sendMessage(this.jTextField1.getText(),
                         Integer.parseInt(this.jTextField2.
-                                getText()),filecontent);     
-            } catch (IOException ex) {
-                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                                getText()),fragmentos.get(i));     
+                try {
+                    Thread.sleep(0, 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,17 +299,99 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
     @Override
     public void DatagramPacketReceived(String sourceHost, int sourcePort, byte[] payload) {
        
+        /*File dest = new File("8.jpg");
+        try {
+            Files.write(dest.toPath(), payload);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }*/     
+       if (comenzarFragmentos) {
+            if (this.contFragmentos < this.maxFragmentos) {
+                this.fragmentosRecibidos.add(payload);
+                this.contFragmentos++;
+                System.out.println(this.contFragmentos+"-"+this.maxFragmentos);
+            }
+            if(this.contFragmentos == this.maxFragmentos){
+                this.comenzarFragmentos = false;
+                this.contFragmentos = 0;
+                byte[] b =armador();
+                File dest = new File(this.nameFileRecived);
+                try {
+                    Files.write(dest.toPath(), b);
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("finalizo");
+            }
+        }else{
+           String firstDatagram = new String(payload);
+            if (firstDatagram.substring(0, 2).equals("P1")) {
+                String[] config = firstDatagram.split("-");
+                this.nameFileRecived = config[1];
+                this.totalSizeFile = Integer.parseInt(config[2]);
+                this.maxFragmentos = Integer.parseInt(config[3]);
+                this.theLast = Integer.parseInt(config[4]);
+                this.comenzarFragmentos = true;
+            }
+        }
         
-        this.jTextArea1.insert("sourceHost: "+
+        /*this.jTextArea1.insert("sourceHost: "+
                 sourceHost+"/ sourcePort: "+
                 sourcePort +" / Payload: "+
-                ( new String(payload))+"\n",0);
+                ( new String(payload))+"\n",0);*/
     }
 
     
     
     @Override
     public void ErrorHasBeenThrown(Exception error) {
-        this.jTextArea1.insert(error.getMessage()+"\n",0);
+        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, error);
+    }
+    
+    public void fragmentador(File file) {
+        byte[] filecontent = null;
+        try {
+            filecontent = Files.readAllBytes(file.toPath());
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        int numeroFragmentosArchivo = 1;
+        final int sizeFile  = filecontent.length; 
+        if (sizeFile > sizeDatagram) {
+            numeroFragmentosArchivo += (int) (sizeFile)/sizeDatagram;
+        } 
+        int sizeLast =  sizeFile - ((numeroFragmentosArchivo - 1) * sizeDatagram);
+        byte[] Primerdatagram = ("P1-"+file.getName()+"-"+sizeFile+"-"+numeroFragmentosArchivo+"-" + sizeLast+"-").getBytes();
+        fragmentos.add(Primerdatagram );
+        int cont = 0;
+        byte[] b;
+        for (int i = 0; i < numeroFragmentosArchivo; i++) {
+            if(cont < sizeFile){  
+                int verificarsobrante = sizeFile-cont;
+                if ( verificarsobrante > sizeDatagram) {
+                    b = new byte[sizeDatagram];    
+                    System.arraycopy(filecontent, cont, b, 0, sizeDatagram);
+                }else{
+                    b = new byte[verificarsobrante];
+                    System.arraycopy(filecontent, cont, b, 0, verificarsobrante);
+                }
+                fragmentos.add(b);
+                cont += 1024;
+            }    
+        }
+    }    
+    
+    public byte[] armador(){
+        int cont = 0;
+        byte[] b = new byte[this.totalSizeFile];
+        for (int i = 0; i < this.maxFragmentos; i++) {
+            if (i == this.maxFragmentos - 1) {
+                 System.arraycopy(this.fragmentosRecibidos.get(i), 0, b, cont, this.theLast);
+            }else{
+                 System.arraycopy(this.fragmentosRecibidos.get(i), 0, b, cont, sizeDatagram);
+            }           
+            cont += sizeDatagram;       
+        }
+        return b;
     }
 }
