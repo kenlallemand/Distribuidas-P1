@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.master/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.master/">
+
+<xs:element name="GetArchivo" type="tns:GetArchivo"/>
+
+<xs:element name="GetArchivoResponse" type="tns:GetArchivoResponse"/>
+
+<xs:element name="GetByte" type="tns:GetByte"/>
+
+<xs:element name="GetByteResponse" type="tns:GetByteResponse"/>
+
+<xs:element name="GetInfo" type="tns:GetInfo"/>
+
+<xs:element name="GetInfoResponse" type="tns:GetInfoResponse"/>
+
+<xs:element name="GetTam" type="tns:GetTam"/>
+
+<xs:element name="GetTamResponse" type="tns:GetTamResponse"/>
+
+<xs:element name="Getfilelist" type="tns:Getfilelist"/>
+
+<xs:element name="GetfilelistResponse" type="tns:GetfilelistResponse"/>
+
+<xs:complexType name="Getfilelist">
+<xs:sequence>
+<xs:element name="ID" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetfilelistResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:anyType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetTam">
+<xs:sequence>
+<xs:element name="ID" type="xs:string" minOccurs="0"/>
+<xs:element name="narch" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetTamResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetArchivo">
+<xs:sequence>
+<xs:element name="ID" type="xs:string" minOccurs="0"/>
+<xs:element name="narch" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetArchivoResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:base64Binary" nillable="true" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetInfo">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="GetInfoResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetByte">
+<xs:sequence>
+<xs:element name="ID" type="xs:string" minOccurs="0"/>
+<xs:element name="narch" type="xs:string" minOccurs="0"/>
+<xs:element name="buff" type="xs:int"/>
+<xs:element name="FileP" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GetByteResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:base64Binary" nillable="true" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
