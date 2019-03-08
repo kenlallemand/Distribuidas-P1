@@ -78,7 +78,7 @@ public class MasterWs {
      * Web service operation
      */
     @WebMethod(operationName = "GetArchivo")
-    public DataHandler GetArchivo(@WebParam(name = "ID") String ID,@WebParam(name = "narch") String narch ) {
+    public byte[] GetArchivo(@WebParam(name = "ID") String ID,@WebParam(name = "narch") String narch ) {
       try {
             URL location = new URL(ID);
            master.wsc.NewWebService_Service Service = new master.wsc.NewWebService_Service(location);
