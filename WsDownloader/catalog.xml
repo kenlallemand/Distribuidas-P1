@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
     <system systemId="http://localhost:8080/MasterWs/MasterWs?WSDL" uri="xml-resources/web-service-references/MasterWs/wsdl/localhost_8080/MasterWs/MasterWs.wsdl"/>
+    <system systemId="http://localhost:8080/MasterWs/MasterWs?wsdl" uri="xml-resources/web-service-references/MasterWs/wsdl/localhost_8080/MasterWs/MasterWs.wsdl"/>
     <system systemId="http://localhost:8080/MasterWs/MasterWs?xsd=1" uri="xml-resources/web-service-references/MasterWs/wsdl/localhost_8080/MasterWs/MasterWs.xsd_1.xsd"/>
 </catalog>

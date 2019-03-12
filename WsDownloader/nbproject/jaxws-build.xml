@@ -19,7 +19,7 @@
     <target name="wsimport-client-MasterWs" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/MasterWs"/>
         <property name="wsdl-MasterWs" location="xml-resources/web-service-references/MasterWs/wsdl/localhost_8080/MasterWs/MasterWs.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/MasterWs" destdir="${build.generated.dir}/jax-wsCache/MasterWs" wsdl="${wsdl-MasterWs}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/MasterWs/MasterWs?WSDL" xnocompile="true" xendorsed="true" package="ws.master">
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/MasterWs" destdir="${build.generated.dir}/jax-wsCache/MasterWs" wsdl="${wsdl-MasterWs}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/MasterWs/MasterWs?wsdl" xnocompile="true" xendorsed="true">
             <depends file="${wsdl-MasterWs}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/MasterWs"/>
         </wsimport>
@@ -31,7 +31,7 @@
     </target>
     <target name="wsimport-client-clean-MasterWs" depends="-init-project">
         <delete dir="${build.generated.dir}/jax-wsCache/MasterWs"/>
-        <delete dir="${build.generated.sources.dir}/jax-ws/ws/master"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/master/ws"/>
     </target>
     <target name="wsimport-client-generate" depends="wsimport-client-MasterWs"/>
 </project>
