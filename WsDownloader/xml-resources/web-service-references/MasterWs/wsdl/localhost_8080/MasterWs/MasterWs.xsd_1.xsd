@@ -64,7 +64,14 @@
 
 <xs:complexType name="GetInfoResponse">
 <xs:sequence>
-<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="return" type="tns:serverinfo" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serverinfo">
+<xs:sequence>
+<xs:element name="sName" type="xs:string" minOccurs="0"/>
+<xs:element name="sURL" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

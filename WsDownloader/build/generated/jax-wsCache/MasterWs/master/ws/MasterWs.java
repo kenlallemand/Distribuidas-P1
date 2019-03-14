@@ -43,14 +43,14 @@ public interface MasterWs {
     /**
      * 
      * @return
-     *     returns java.util.List<java.lang.String>
+     *     returns java.util.List<master.ws.Serverinfo>
      */
     @WebMethod(operationName = "GetInfo")
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "GetInfo", targetNamespace = "http://ws.master/", className = "master.ws.GetInfo")
     @ResponseWrapper(localName = "GetInfoResponse", targetNamespace = "http://ws.master/", className = "master.ws.GetInfoResponse")
     @Action(input = "http://ws.master/MasterWs/GetInfoRequest", output = "http://ws.master/MasterWs/GetInfoResponse")
-    public List<String> getInfo();
+    public List<Serverinfo> getInfo();
 
     /**
      * 

@@ -24,26 +24,31 @@ import javax.jws.WebParam;
  */
 @WebService(serviceName = "MasterWs")
 public class MasterWs {
-    private final String ruta="C:\\Users\\andres\\Documents\\Distribuidas-P1\\webService\\"; 
-    private final String listaarc="listarchivos.txt";
+    private final String ruta="C:\\Users\\Public\\Downloads\\"; 
+    private final String listaarc="listarc.txt";
     /**
      * Web service operation
+     * @return 
      */
     @WebMethod(operationName = "GetInfo")
-    public List<String> GetInfo() {
+    public List<serverinfo> GetInfo() {
        BufferedReader br = null;
 	FileReader fr = null;
-        List<String> listnames=null;
+        List<serverinfo> listnames=null;
+        System.out.println("antes del try");
 	try{
             fr = new FileReader(ruta+listaarc);
             br = new BufferedReader(fr);
             String cl;
             listnames=new ArrayList<>();
             while ((cl = br.readLine()) != null){
-                String[] serverinfo = cl.split(",");
-                listnames.add(cl);
+                System.out.println("estoy en el while");
+                String[] serverInformation = cl.split(",");
+                listnames.add(new serverinfo(serverInformation[0], serverInformation[1]));
             }
+            System.out.println("sali del while");
 	} catch (IOException e) {
+            System.out.println("error");
             e.printStackTrace();
 	} finally {
             try {
@@ -73,9 +78,7 @@ public class MasterWs {
         return null;
     }
 
-    /**
-     * Web service operation
-     */
+  
     @WebMethod(operationName = "GetArchivo")
     public byte[] GetArchivo(@WebParam(name = "ID") String ID,@WebParam(name = "narch") String narch ) {
       try {
@@ -88,14 +91,12 @@ public class MasterWs {
         return null;
     }
 
-    /**
-     * Web service operation
-     */
     @WebMethod(operationName = "GetTam")
     public long GetTam(@WebParam(name = "ID") String ID, @WebParam(name = "narch") String narch) {
         try {
             URL location = new URL(ID);
             master.wsc.NewWebService_Service  service = new master.wsc.NewWebService_Service(location);
+            System.out.println(""+service.getNewWebServicePort().getTamaño(narch));
             return service.getNewWebServicePort().getTamaño(narch);
         } catch (MalformedURLException ex) {
             Logger.getLogger(MasterWs.class.getName()).log(Level.SEVERE, null, ex);
@@ -103,9 +104,7 @@ public class MasterWs {
         return 0;
     }
 
-    /**
-     * Web service operation
-     */
+
     @WebMethod(operationName = "GetByte")
     public byte[] GetByte(@WebParam(name = "ID") String ID, @WebParam(name = "narch") String narch,@WebParam(name="buff") int buff ,@WebParam(name = "FileP") long FileP) {
         try {

@@ -124,6 +124,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Serverinfo }
+     * 
+     */
+    public Serverinfo createServerinfo() {
+        return new Serverinfo();
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetTam }{@code >}}
      * 
      */

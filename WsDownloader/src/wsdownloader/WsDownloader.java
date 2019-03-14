@@ -21,7 +21,7 @@ import master.ws.MasterWs;
  */
 public class WsDownloader extends Thread {
 
-     private final String ruta = "C:\\Users\\andres\\Documents\\Distribuidas-P1\\webService\\";
+     private final String ruta = "C:\\Users\\andres\\Documents\\Distribuidas-P1";
     private  master.ws.MasterWs_Service masterws;
     private String ID;
     private String fName;
@@ -29,8 +29,9 @@ public class WsDownloader extends Thread {
     private int buff;
     
 
-    public WsDownloader(MasterWs_Service masterws, String fName,long Fsize, int pOF, int buff) {
+    public WsDownloader(MasterWs_Service masterws,String ID ,String fName,long Fsize) {
         this.masterws = masterws;
+        this.ID=ID;
         this.fName = fName;
         this.buff = 1024;
         this.pOF = (int)Math.ceil((double)Fsize/buff);
@@ -44,8 +45,9 @@ public class WsDownloader extends Thread {
              
              int contador= 0;
              byte[] data;
-             data = masterws.getMasterWsPort().getByte(ID, ruta, buff, pOF);
-             while (contador < pOF) {                   
+             
+             while (contador < pOF) {     
+                 data = masterws.getMasterWsPort().getByte(ID, ruta, buff, contador);
                     if(data!=null){
                         os.write(data, 0, data.length); 
                         contador++;

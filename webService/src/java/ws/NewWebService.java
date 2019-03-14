@@ -19,8 +19,8 @@ import javax.jws.WebParam;
 
 @WebService(serviceName = "NewWebService")
 public class NewWebService {
-    private final String ruta="C:\\Users\\andres\\Documents\\Distribuidas-P1\\webService\\"; 
-    private final String listaarc="listarchivos.txt";
+    private final String ruta="C:\\Users\\andres\\Documents\\Distribuidas-P1\\"; 
+    private final String listaarc="lista.txt";
 
 
 
@@ -52,7 +52,11 @@ public class NewWebService {
      */
     @WebMethod(operationName = "GetTama\u00f1o")
     public long GetTamaño(@WebParam(name="Filename") String Filename ) {
-        return new File(ruta+Filename).length();
+        System.out.println(""+ (new File(ruta+Filename).length()));
+          File f = new  File (ruta+Filename);
+                long hi = f.length (); 
+            return hi;
+       // return (new File(ruta+Filename).length());
     }
 
     /**
