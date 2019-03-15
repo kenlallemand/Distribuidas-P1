@@ -5,11 +5,17 @@
  */
 package udpmanager;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -22,14 +28,18 @@ import javax.swing.JFileChooser;
  */
 
 
-public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterface{
+public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterface, BridgeUDP_TCP{
 
     
     UDPListenerManager uDPListenerManager;
     MulticastManager multicastManager;
+    TCPServer tCPServer;
+    
     ArrayList<byte[]> fragmentos; 
     
     int sizeDatagram;
+    
+    byte[] prueba = null;
     
     ArrayList<byte[]> fragmentosRecibidos;
     String nameFileRecived;
@@ -65,7 +75,6 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
 
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -76,7 +85,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.setText("10.10.214.217");
+        jTextField1.setText("172.17.9.255");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -84,8 +93,6 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
         });
 
         jTextField2.setText("9090");
-
-        jTextField3.setText("hola mundo");
 
         jButton1.setText("Send");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -107,6 +114,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
             }
         });
 
+        jCheckBox1.setSelected(true);
         jCheckBox1.setText("Multicast Enabled");
 
         jButton3.setText("jButton3");
@@ -127,14 +135,10 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton3)
@@ -165,7 +169,6 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                         .addComponent(jButton3)
                         .addGap(4, 4, 4)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
                     .addComponent(jCheckBox1))
                 .addGap(18, 18, 18)
@@ -178,6 +181,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.out.println("entro");
+        tCPServer = new TCPServer(this);
         if(!this.jCheckBox1.isSelected()){
             this.uDPListenerManager=
                 new UDPListenerManager(
@@ -186,9 +190,9 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                                         jTextField4.getText()));
         }else{
             
-            this.multicastManager=new MulticastManager(this.jTextField1.getText(), 
-                    Integer.
-                                parseInt(this.jTextField4.getText()), this);
+                this.multicastManager=new MulticastManager(this.jTextField1.getText(), 
+                        Integer.
+                                    parseInt(this.jTextField4.getText()), this);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -219,12 +223,13 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                 }
                 //System.out.println(i);
             }
+            fragmentos = new  ArrayList<byte[]> ();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        byte[] filecontent;
+       
         JFileChooser fc = new JFileChooser();
         int op = fc.showOpenDialog(this);
         if (op == JFileChooser.APPROVE_OPTION) {
@@ -241,7 +246,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                 }
             }
         }
-        
+        fragmentos = new  ArrayList<byte[]> ();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -292,7 +297,6 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 
@@ -321,6 +325,8 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                fragmentosRecibidos = new  ArrayList<byte[]> ();
+                AddLista(nameFileRecived);
                 System.out.println("finalizo");
             }
         }else{
@@ -352,6 +358,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
         byte[] filecontent = null;
         try {
             filecontent = Files.readAllBytes(file.toPath());
+            prueba = filecontent;
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -376,7 +383,7 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
                     System.arraycopy(filecontent, cont, b, 0, verificarsobrante);
                 }
                 fragmentos.add(b);
-                cont += 1024;
+                cont += sizeDatagram;
             }    
         }
     }    
@@ -394,4 +401,94 @@ public class GUI extends javax.swing.JFrame  implements UDPListenerManagerInterf
         }
         return b;
     }
+
+    @Override
+    public void Bridge(String nameFile) {
+       
+        File file = new File(nameFile); 
+        fragmentador(file);
+
+            for (int i = 0; i < fragmentos.size(); i++) {             
+                this.multicastManager.sendMessage(this.jTextField1.getText(),
+                        Integer.parseInt(this.jTextField2.
+                                getText()),fragmentos.get(i));     
+                try {
+                    Thread.sleep(0, 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            fragmentos = new  ArrayList<byte[]>();
+        file.delete();
+        fragmentos = new  ArrayList<byte[]> ();
+    }
+    
+    public void AddLista(String nombreArchivo){
+        //Lectura
+      File archivo = null;
+      FileReader fr = null;
+      BufferedReader br = null;
+      //escritura
+      FileWriter fichero = null;
+      PrintWriter pw = null;
+      //Donde se guardan los datos
+      ArrayList datos = new ArrayList<>();
+      
+      //Dato a guardar
+      String datoadd = nombreArchivo;
+      
+
+      try {
+         // Apertura del fichero y creacion de BufferedReader para poder
+         // hacer una lectura comoda (disponer del metodo readLine()).
+         archivo = new File ("lista.txt");
+         fr = new FileReader (archivo);
+         br = new BufferedReader(fr);
+
+         // Lectura del fichero
+         String linea;
+         while((linea=br.readLine())!=null)
+            //System.out.println(linea);
+             datos.add(linea);
+      }
+      catch(Exception e){
+         e.printStackTrace();
+      }finally{
+         // En el finally cerramos el fichero, para asegurarnos
+         // que se cierra tanto si todo va bien como si salta 
+         // una excepcion.
+         try{                    
+            if( null != fr ){   
+               fr.close();     
+            }                  
+         }catch (Exception e2){ 
+            e2.printStackTrace();
+         }
+      }
+      //Escritura
+        try
+        {
+            fichero = new FileWriter("lista.txt");
+            pw = new PrintWriter(fichero);
+
+            for (int i = 0; i < datos.size(); i++){
+                pw.println(datos.get(i));
+            }
+            pw.println(datoadd);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+      
+    }
+    
 }
